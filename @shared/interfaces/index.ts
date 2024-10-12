@@ -1,0 +1,1 @@
+export * from './wpp.notfy.interface'
