@@ -1,5 +1,5 @@
+import { WppNotfyRabbitPqService } from "../@shared/services/wpp.notify.rabbitMq.service";
 import { BaileysWppAPI } from "./baileys/baileys";
-import {WppNotfyRabbitPqService} from "shared/dist/services/wpp.notify.rabbitMq.service"
 
 export class BaileysFactory {
     static async run() {

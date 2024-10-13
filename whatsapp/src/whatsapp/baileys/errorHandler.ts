@@ -1,4 +1,4 @@
-import { IWppNotfyService } from "shared/interfaces/wpp.notfy.interface";
+import { IWppNotfyService } from "../../@shared/interfaces/wpp.notfy.interface";
 
 export class BaileysErrorHandler {
     constructor(

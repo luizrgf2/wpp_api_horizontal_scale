@@ -1,10 +1,11 @@
 import makeWASocket, { ConnectionState, DisconnectReason, isJidUser, useMultiFileAuthState } from '@whiskeysockets/baileys'
 import { Boom } from '@hapi/boom'
 import { BaileysErrorHandler } from './errorHandler'
-import {IWppNotfyService} from 'shared/interfaces/wpp.notfy.interface'
+import { IMessageManipulation } from '../../interfaces/message.manipulation.interface';
+import { IWppNotfyService } from '../../@shared/interfaces/wpp.notfy.interface';
 
 
-export class BaileysWppAPI {
+export class BaileysWppAPI implements IMessageManipulation {
     
     private sock: ReturnType<typeof makeWASocket> | undefined =  undefined;
     private numberOfSession: string | undefined
@@ -37,9 +38,19 @@ export class BaileysWppAPI {
         }
     }
 
+    async editMessage(newTextMessage: string, to: string): Promise<void> {
+        throw new Error('Method not implemented.');
+    }
+
+    async sendTextMessage(textMessage: string, to: string) {
+        const toModify = to+"@s.whatsapp.net"
+        await this.sock?.sendMessage(toModify, {text: textMessage})
+    }
+
     async startSession() {
         const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys')
         const sock = makeWASocket({
+            printQRInTerminal:  true,
             auth: state,
             shouldIgnoreJid(jid) {
                 if(isJidUser(jid)) return true
