@@ -5,13 +5,13 @@ export interface IWppNotfyError {
 }
 
 export interface IWppNotfyProps<T> {
-    sessionNumber: string,
+    idSession: number,
     type: 'error' | 'qrCode' | 'sessionStarted' | 'menssageSended' | 'sessionStoped',
     content: T
 }
 
 export interface IWppNotfyService {
-    sendQrToSessionNumber(sessionNumber: string, qrCode: string): Promise<void>
-    sendErrorToSessionNumber(sessionNumber: string, error: IWppNotfyError): Promise<void>
-    sendSessionStartedWithSuccessToSessionNumber(sessionNumber: string) : Promise<void>
+    sendQrToSessionNumber(idSession: number, qrCode: string): Promise<void>
+    sendErrorToSessionNumber(idSession: number, error: IWppNotfyError): Promise<void>
+    sendSessionStartedWithSuccessToSessionNumber(idSession: number) : Promise<void>
 }

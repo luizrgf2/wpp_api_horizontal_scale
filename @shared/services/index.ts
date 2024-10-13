@@ -1,0 +1,1 @@
+export * from './wpp.notify.rabbitMq.service'

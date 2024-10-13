@@ -1,18 +1,27 @@
+import { rabbitMQConfig } from "../config";
 import { IWppNotfyError, IWppNotfyProps, IWppNotfyService } from "../interfaces";
 import { RabbitMqBaseService } from "../utils/rabbitMq.base.service";
 
 export class WppNotfyRabbitPqService implements IWppNotfyService {
 
     private notfyQueueName = 'notfyWpp'
-    constructor(private readonly rabbitMqBase: RabbitMqBaseService) {
-        this.rabbitMqBase.channel.assertQueue(this.notfyQueueName, {
+    private readonly rabbitMqBase: RabbitMqBaseService
+
+    constructor() {
+        this.rabbitMqBase = new RabbitMqBaseService()
+    }
+
+    async start(rabbitMqURI?: string) {
+        await  this.rabbitMqBase.start(rabbitMqURI ? rabbitMqURI : rabbitMQConfig.amqpURI)
+        if(!this.rabbitMqBase.channel) throw new Error("Channel not started...")
+        await this.rabbitMqBase.channel.assertQueue(this.notfyQueueName, {
             durable: true
         })
     }
 
-    async sendQrToSessionNumber(sessionNumber: string, qrCode: string): Promise<void> {
+    async sendQrToSessionNumber(idSession: number, qrCode: string): Promise<void> {
         const content = {
-            sessionNumber: sessionNumber,
+            idSession: idSession,
             content: qrCode,
             type: 'qrCode'
         } as IWppNotfyProps<string>
@@ -20,20 +29,20 @@ export class WppNotfyRabbitPqService implements IWppNotfyService {
         this.rabbitMqBase.sendToQueue(this.notfyQueueName, Buffer.from(JSON.stringify(content)))
     }
 
-    async sendErrorToSessionNumber(sessionNumber: string, error: IWppNotfyError): Promise<void> {
+    async sendErrorToSessionNumber(idSession: number, error: IWppNotfyError): Promise<void> {
         const content = {
-            sessionNumber: sessionNumber,
+            idSession: idSession,
             content: error,
             type: 'error'
         } as IWppNotfyProps<IWppNotfyError>
 
         this.rabbitMqBase.sendToQueue(this.notfyQueueName, Buffer.from(JSON.stringify(content)))
     }
-    
-    async sendSessionStartedWithSuccessToSessionNumber(sessionNumber: string): Promise<void> {
+
+    async sendSessionStartedWithSuccessToSessionNumber(idSession: number): Promise<void> {
         const content = {
-            sessionNumber: sessionNumber,
-            content: 'Sucesso para iniciar a sessão '+sessionNumber,
+            idSession: idSession,
+            content: 'Sucesso para iniciar a sessão '+idSession,
             type: 'sessionStarted'
         } as IWppNotfyProps<string>
 

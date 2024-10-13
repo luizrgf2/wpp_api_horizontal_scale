@@ -2,9 +2,10 @@
   "name": "shared",
   "version": "1.0.0",
   "description": "Projeto para compartilhar serviços e interfaces",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
   "author": "Luiz Felipe",
   "license": "ISC",
@@ -13,6 +14,8 @@
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
-    "@types/amqplib": "^0.10.5"
+    "@types/amqplib": "^0.10.5",
+    "tsc": "^2.0.4",
+    "typescript": "^5.6.3"
   }
 }
