@@ -1,7 +1,8 @@
 import makeWASocket, { ConnectionState, DisconnectReason, isJidUser, useMultiFileAuthState } from '@whiskeysockets/baileys'
 import { Boom } from '@hapi/boom'
-import { IWppNotfyService } from '@src/@shared/wppNotfy/wpp.notfy.interface'
 import { BaileysErrorHandler } from './errorHandler'
+import {IWppNotfyService} from 'shared/interfaces/wpp.notfy.interface'
+
 
 export class BaileysWppAPI {
     
@@ -17,8 +18,7 @@ export class BaileysWppAPI {
         const { connection, lastDisconnect, qr } = update
 
         if(qr) {
-            if(!this.numberOfSession) throw Error('Erro para encontrar o número da sessão!')
-            await this.wppNotfy.sendQrToSessionNumber(this.numberOfSession, qr)
+            await this.wppNotfy.sendQrToSessionNumber(1, qr)
         }
 
         if(connection === 'close' && lastDisconnect) {
@@ -29,12 +29,15 @@ export class BaileysWppAPI {
                 this.startSession()
             }
         } else if(connection === 'open') {
+
             this.numberOfSession = this.sock?.user?.id
-            console.log('opened connection')
+            if(!this.numberOfSession) throw Error('Erro para encontrar o número da sessão!')
+            
+            await this.wppNotfy.sendSessionStartedWithSuccessToSessionNumber(1)
         }
     }
 
-    private  async startSession() {
+    async startSession() {
         const { state, saveCreds } = await useMultiFileAuthState('auth_info_baileys')
         const sock = makeWASocket({
             auth: state,
@@ -44,7 +47,7 @@ export class BaileysWppAPI {
             },
         })
         sock.ev.on ('creds.update', saveCreds)
-        sock.ev.on('connection.update',this.handleConnState)
+        sock.ev.on('connection.update',(arg)=>this.handleConnState(arg))
 
         this.sock = sock
     }

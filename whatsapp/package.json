@@ -2,13 +2,21 @@
   "name": "whatsapp",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc"
   },
   "author": "Luiz Feliple",
   "license": "ISC",
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.7.8"
+    "@whiskeysockets/baileys": "^6.7.8",
+    "amqplib": "^0.10.4",
+    "shared": "file:../@shared/shared-1.0.0.tgz",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.5",
+    "tsc": "^2.0.4",
+    "typescript": "^5.6.3"
   }
 }
